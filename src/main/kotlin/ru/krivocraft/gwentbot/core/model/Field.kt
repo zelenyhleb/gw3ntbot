@@ -18,7 +18,7 @@ class Field {
 
         var power = 0
 
-        fun putCard(card: Unit) {
+        fun putUnit(card: Unit) {
             cards.add(card)
             power += card.power
         }
