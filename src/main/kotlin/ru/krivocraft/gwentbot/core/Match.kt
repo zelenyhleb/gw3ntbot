@@ -33,7 +33,7 @@ class Match(
     }
 
     private fun nextRound() {
-
+        field.clearField()
     }
 
     interface Message {
