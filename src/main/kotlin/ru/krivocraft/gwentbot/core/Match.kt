@@ -2,6 +2,7 @@ package ru.krivocraft.gwentbot.core
 
 import me.ivmg.telegram.entities.ReplyKeyboardRemove
 import me.ivmg.telegram.entities.ReplyMarkup
+import ru.krivocraft.gwentbot.core.model.Deck
 import ru.krivocraft.gwentbot.core.model.Field
 import ru.krivocraft.gwentbot.core.model.Player
 
@@ -11,16 +12,21 @@ class Match(
     private val field: Field = Field()
 ) {
 
+    private val decks = mutableListOf<Deck>()
+    private val pools = mutableListOf<Deck>()
+    private val eliminated = mutableListOf<Deck>()
     init {
         players.forEach {
-            "Session found".notifyPlayer(it, ReplyKeyboardRemove())
+            notifyPlayer("Session found", it, ReplyKeyboardRemove())
+            it.deck.cards.shuffle()
+            decks.add(it.deck)
         }
         nextRound()
         nextTurn()
     }
 
-    private fun String.notifyPlayer(player: Player, replyMarkup: ReplyMarkup) {
-        message.send(player.chatId, this, replyMarkup = replyMarkup)
+    private fun notifyPlayer(text: String, player: Player, replyMarkup: ReplyMarkup) {
+        message.send(player.chatId, text, replyMarkup = replyMarkup)
     }
 
     private fun nextTurn() {
