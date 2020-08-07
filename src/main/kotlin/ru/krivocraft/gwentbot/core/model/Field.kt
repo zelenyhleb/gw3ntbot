@@ -39,26 +39,14 @@ class Field {
     }
 
     fun poolReport(playerNumber: Int): String {
-        return report(pools[playerNumber])
+        return pools[playerNumber].report()
     }
 
     fun eliminatedReport(playerNumber: Int): String {
-        return report(eliminated[playerNumber])
+        return eliminated[playerNumber].report()
     }
 
-    private fun report(pool: Pool): String {
-        var report = ""
-        pool.cards.forEach() {
-            report += it.name
-            if (it is Unit) {
-                report += " " + it.power
-            }
-            report += "\n"
-        }
-        return report
-    }
-
-    inner class Line {
+    inner class Line : Reportable {
         private val cards = mutableListOf<Unit>()
 
         var power = 0
@@ -68,7 +56,7 @@ class Field {
             power += card.power
         }
 
-        fun pushUnit(card: Unit) {
+        private fun pushUnit(card: Unit) {
             cards.remove(card)
             power -= card.power
         }
@@ -80,5 +68,12 @@ class Field {
             }
         }
 
+        override fun report(): String {
+            var report = ""
+            cards.forEach() {
+                report += it.name + " " + it.power + "\n"
+            }
+            return report
+        }
     }
 }

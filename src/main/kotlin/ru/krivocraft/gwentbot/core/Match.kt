@@ -33,12 +33,17 @@ class Match(
         message.send(player.chatId, text, replyMarkup = replyMarkup)
     }
 
+    private fun notifyAllPlayers(text: String, replyMarkup: ReplyMarkup) {
+        message.send(players[0].chatId, text, replyMarkup = replyMarkup)
+        message.send(players[1].chatId, text, replyMarkup = replyMarkup)
+    }
+
     private fun nextTurn() {
-        if (passes[1 - currentPlayer] != true) {
+        if (!passes[1 - currentPlayer]) {
             currentPlayer = 1 - currentPlayer
         }
         else {
-            if (passes[currentPlayer] == true) {
+            if (passes[currentPlayer]) {
                 nextRound()
             }
         }
@@ -49,6 +54,15 @@ class Match(
         val outcome = field.outcome()
         scores[0]+=outcome[0]
         scores[1]+=outcome[1]
+        if (outcome[0] == 1) {
+            if (outcome[1] == 1) {
+                notifyAllPlayers("Ничья", ReplyKeyboardRemove())
+            } else {
+                notifyAllPlayers("Победил игрок 1", ReplyKeyboardRemove())
+            }
+        } else {
+            notifyAllPlayers("Победил игрок 2", ReplyKeyboardRemove())
+        }
         field.clearField()
     }
 
