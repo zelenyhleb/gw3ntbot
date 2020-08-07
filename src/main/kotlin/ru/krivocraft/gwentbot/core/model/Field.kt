@@ -25,7 +25,7 @@ class Field {
         }
     }
 
-    fun getOutcome(): List<Int> {
+    fun outcome(): List<Int> {
         val firstPlayerResult = lines[0].power + lines[1].power + lines[2].power
         val secondPlayerResult = lines[3].power + lines[4].power + lines[5].power
         val outcome = mutableListOf(0, 0)
@@ -38,6 +38,26 @@ class Field {
         return outcome
     }
 
+    fun poolReport(playerNumber: Int): String {
+        return report(pools[playerNumber])
+    }
+
+    fun eliminatedReport(playerNumber: Int): String {
+        return report(eliminated[playerNumber])
+    }
+
+    private fun report(pool: Pool): String {
+        var report = ""
+        pool.cards.forEach() {
+            report += it.name
+            if (it is Unit) {
+                report += " " + it.power
+            }
+            report += "\n"
+        }
+        return report
+    }
+
     inner class Line {
         private val cards = mutableListOf<Unit>()
 
@@ -47,10 +67,12 @@ class Field {
             cards.add(card)
             power += card.power
         }
+
         fun pushUnit(card: Unit) {
             cards.remove(card)
             power -= card.power
         }
+
         fun clearLine(playerNumber: Int) {
             cards.forEach() {
                 pushUnit(it)

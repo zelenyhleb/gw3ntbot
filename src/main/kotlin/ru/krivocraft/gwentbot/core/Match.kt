@@ -5,7 +5,6 @@ import me.ivmg.telegram.entities.ReplyMarkup
 import ru.krivocraft.gwentbot.core.model.Deck
 import ru.krivocraft.gwentbot.core.model.Field
 import ru.krivocraft.gwentbot.core.model.Player
-import ru.krivocraft.gwentbot.core.model.Pool
 import kotlin.random.Random
 
 class Match(
@@ -16,12 +15,15 @@ class Match(
     private val decks = mutableListOf<Deck>()
     private var currentPlayer = Random.nextInt(0, 1)
     private var scores = mutableListOf<Int>(0, 0)
+    private var passes = mutableListOf<Boolean>(false, false)
     init {
-        players.forEach {
-            notifyPlayer("Игра найдена", it, ReplyKeyboardRemove())
-            it.deck.cards.shuffle()
-            decks.add(it.deck)
-            field.fillPool(it.deck)
+        players.forEachIndexed { index, player ->
+            notifyPlayer("Игра найдена", player, ReplyKeyboardRemove())
+            player.deck.cards.shuffle()
+            decks.add(player.deck)
+            field.fillPool(player.deck)
+            notifyPlayer("Вы игрок " + index + 1, player, ReplyKeyboardRemove())
+            notifyPlayer(field.poolReport(index), player, ReplyKeyboardRemove())
         }
         nextRound()
         nextTurn()
@@ -32,11 +34,19 @@ class Match(
     }
 
     private fun nextTurn() {
-        currentPlayer = 1 - currentPlayer
+        if (passes[1 - currentPlayer] != true) {
+            currentPlayer = 1 - currentPlayer
+        }
+        else {
+            if (passes[currentPlayer] == true) {
+                nextRound()
+            }
+        }
+
     }
 
     private fun nextRound() {
-        val outcome = field.getOutcome()
+        val outcome = field.outcome()
         scores[0]+=outcome[0]
         scores[1]+=outcome[1]
         field.clearField()
