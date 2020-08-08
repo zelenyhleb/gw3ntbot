@@ -66,7 +66,4 @@ class Match(
         field.clearField()
     }
 
-    interface Message {
-        fun send(chatId: Long, message: String, replyMarkup: ReplyMarkup)
-    }
 }

@@ -2,7 +2,7 @@ package ru.krivocraft.gwentbot.core
 
 import ru.krivocraft.gwentbot.core.model.Player
 
-class MatchMaking(private val message: Match.Message) {
+class MatchMaking(private val message: Message) {
 
     private val matches = mutableListOf<Match>()
     private val queue = mutableListOf<Player>()
